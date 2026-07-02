@@ -5,8 +5,9 @@ COPY mvnw .
 COPY src ./src
 RUN chmod +x mvnw && ./mvnw clean package -DskipTests
 
-FROM eclipse-temurin:17-jre
+FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
 EXPOSE 8080
+ENV PORT=8080
 CMD ["java", "-jar", "app.jar"]
