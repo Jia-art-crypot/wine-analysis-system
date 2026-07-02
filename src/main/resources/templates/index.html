@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>葡萄酒数据评估分析系统</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Serif SC', serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 500px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            animation: fadeInUp 0.8s ease-out;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .header p {
+            font-size: 0.95em;
+            opacity: 0.9;
+        }
+        
+        .wine-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+            display: block;
+        }
+        
+        .content {
+            padding: 40px 30px;
+        }
+        
+        .upload-section {
+            text-align: center;
+        }
+        
+        .file-input-wrapper {
+            position: relative;
+            margin-bottom: 25px;
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .file-input-label {
+            display: block;
+            padding: 20px;
+            border: 2px dashed #667eea;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+        
+        .file-input-label:hover {
+            background: #e9ecef;
+            border-color: #764ba2;
+        }
+        
+        .file-input-label i {
+            font-size: 2em;
+            color: #667eea;
+            margin-bottom: 10px;
+            display: block;
+        }
+        
+        .file-input-label span {
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .file-name {
+            margin-top: 10px;
+            color: #667eea;
+            font-weight: 600;
+            font-size: 0.9em;
+            min-height: 20px;
+        }
+        
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            width: 100%;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+        
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .loading-content {
+            text-align: center;
+            padding: 30px;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-right: 4px solid #764ba2;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: #667eea;
+            font-size: 1.1em;
+            font-weight: 600;
+        }
+
+        .loading-progress {
+            margin-top: 15px;
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+            margin-top: 15px;
+        }
+        
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+        
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border-left: 4px solid #dc3545;
+            animation: shake 0.5s ease-in-out;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        
+        .features {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 1px solid #e9ecef;
+        }
+        
+        .features h3 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.2em;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+        
+        .feature-item {
+            text-align: center;
+            padding: 15px 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-item:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+        }
+        
+        .feature-item i {
+            font-size: 1.5em;
+            color: #667eea;
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        .feature-item span {
+            color: #666;
+            font-size: 0.8em;
+        }
+        
+        .info-box {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 25px;
+            border-left: 4px solid #2196f3;
+        }
+        
+        .info-box h4 {
+            color: #1565c0;
+            margin-bottom: 10px;
+            font-size: 1em;
+        }
+        
+        .info-box p {
+            color: #555;
+            font-size: 0.85em;
+            line-height: 1.6;
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                border-radius: 15px;
+            }
+            
+            .header {
+                padding: 30px 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.6em;
+            }
+            
+            .content {
+                padding: 30px 20px;
+            }
+            
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="wine-icon">🍷</span>
+            <h1>葡萄酒数据评估分析系统</h1>
+            <p>专业葡萄酒品质与市场分析平台</p>
+        </div>
+        
+        <div class="content">
+            <form action="/upload" method="post" enctype="multipart/form-data" class="upload-section">
+                <div class="file-input-wrapper">
+                    <label for="file" class="file-input-label">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <span>点击选择CSV文件或拖拽上传</span>
+                    </label>
+                    <input type="file" id="file" name="file" accept=".csv" class="file-input" required onchange="updateFileName(this)">
+                    <div id="fileName" class="file-name"></div>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" id="uploadBtn" disabled>
+                    <i class="fas fa-chart-line"></i> 开始分析
+                </button>
+            </form>
+            
+            <div th:if="${msg}" class="error-message">
+                <i class="fas fa-exclamation-circle"></i> <span th:text="${msg}"></span>
+            </div>
+            
+            <div class="features">
+                <h3>🔍 系统功能特色</h3>
+                <div class="feature-grid">
+                    <div class="feature-item">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>多维度图表分析</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-calculator"></i>
+                        <span>专业统计分析</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-brain"></i>
+                        <span>智能评估解读</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="info-box">
+                <h4><i class="fas fa-info-circle"></i> 数据格式说明</h4>
+                <p>请上传包含葡萄酒评分、评分人数、价格等信息的CSV文件。系统将自动进行数据清洗、相关性分析和可视化展示，为您提供专业的市场洞察。</p>
+            </div>
+            
+            <a href="/clear" class="btn btn-secondary">
+                <i class="fas fa-redo"></i> 重置系统
+            </a>
+        </div>
+    </div>
+    
+    <!-- 加载状态指示器 -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">🍷 正在分析您的葡萄酒数据...</div>
+            <div class="loading-progress">这可能需要几秒钟，请稍候</div>
+        </div>
+    </div>
+    
+    <script>
+        function updateFileName(input) {
+            const fileName = input.files[0] ? input.files[0].name : '';
+            const fileNameDisplay = document.getElementById('fileName');
+            const uploadBtn = document.getElementById('uploadBtn');
+            
+            // 清除之前的错误消息
+            const errorMessage = document.querySelector('.error-message');
+            if (errorMessage) {
+                errorMessage.style.display = 'none';
+            }
+            
+            if (fileName) {
+                // 检查文件扩展名
+                const fileExtension = fileName.split('.').pop().toLowerCase();
+                if (fileExtension !== 'csv') {
+                    showError('请上传CSV格式的文件！当前文件格式：' + fileExtension);
+                    uploadBtn.disabled = true;
+                    input.value = ''; // 清除选择的文件
+                    return;
+                }
+                
+                fileNameDisplay.textContent = '✅ 已选择: ' + fileName;
+                fileNameDisplay.style.color = '#28a745';
+                uploadBtn.disabled = false;
+            } else {
+                fileNameDisplay.textContent = '';
+                uploadBtn.disabled = true;
+            }
+        }
+        
+        function showError(message) {
+            let errorDiv = document.querySelector('.error-message');
+            if (!errorDiv) {
+                errorDiv = document.createElement('div');
+                errorDiv.className = 'error-message';
+                errorDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> <span></span>';
+                document.querySelector('.upload-section').appendChild(errorDiv);
+            }
+            errorDiv.querySelector('span').textContent = message;
+            errorDiv.style.display = 'block';
+            
+            // 5秒后自动隐藏错误消息
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 5000);
+        }
+        
+        // 拖拽上传功能
+        const dropZone = document.querySelector('.file-input-label');
+        const fileInput = document.getElementById('file');
+        
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.style.borderColor = '#764ba2';
+            dropZone.style.background = '#e9ecef';
+        });
+        
+        dropZone.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            dropZone.style.borderColor = '#667eea';
+            dropZone.style.background = '#f8f9fa';
+        });
+        
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.style.borderColor = '#667eea';
+            dropZone.style.background = '#f8f9fa';
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                fileInput.files = files;
+                updateFileName(fileInput);
+            }
+        });
+
+        // 表单提交时显示加载状态并添加超时处理
+        const form = document.querySelector('.upload-section');
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            const uploadBtn = document.getElementById('uploadBtn');
+            
+            // 禁用上传按钮，防止重复提交
+            uploadBtn.disabled = true;
+            uploadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 上传中...';
+            loadingOverlay.style.display = 'flex';
+            
+            // 设置30秒超时
+            const timeout = setTimeout(() => {
+                loadingOverlay.style.display = 'none';
+                uploadBtn.disabled = false;
+                uploadBtn.innerHTML = '<i class="fas fa-chart-line"></i> 开始分析';
+                showError('上传超时，请检查网络连接后重试');
+            }, 30000);
+            
+            // 使用AJAX提交表单
+            const formData = new FormData(form);
+            const xhr = new XMLHttpRequest();
+            
+            xhr.open('POST', form.action, true);
+            xhr.timeout = 30000; // 30秒超时
+            
+            xhr.onload = function() {
+                clearTimeout(timeout);
+                
+                if (xhr.status === 200) {
+                    // 成功，显示结果页面
+                    document.open();
+                    document.write(xhr.responseText);
+                    document.close();
+                } else {
+                    // 错误处理
+                    loadingOverlay.style.display = 'none';
+                    uploadBtn.disabled = false;
+                    uploadBtn.innerHTML = '<i class="fas fa-chart-line"></i> 开始分析';
+                    
+                    try {
+                        const response = xhr.responseText;
+                        if (response.includes('文件解析失败')) {
+                            showError('文件解析失败：请检查CSV文件格式是否正确');
+                        } else {
+                            showError('上传失败，错误代码：' + xhr.status);
+                        }
+                    } catch (e) {
+                        showError('上传失败，请稍后重试');
+                    }
+                }
+            };
+            
+            xhr.onerror = function() {
+                clearTimeout(timeout);
+                loadingOverlay.style.display = 'none';
+                uploadBtn.disabled = false;
+                uploadBtn.innerHTML = '<i class="fas fa-chart-line"></i> 开始分析';
+                showError('网络错误，请检查网络连接后重试');
+            };
+            
+            xhr.ontimeout = function() {
+                clearTimeout(timeout);
+                loadingOverlay.style.display = 'none';
+                uploadBtn.disabled = false;
+                uploadBtn.innerHTML = '<i class="fas fa-chart-line"></i> 开始分析';
+                showError('请求超时，请稍后重试');
+            };
+            
+            xhr.send(formData);
+        });
+
+        // 页面加载时检查是否有错误消息
+        window.addEventListener('load', function() {
+            const errorMsg = document.querySelector('.error-message span');
+            if (errorMsg && errorMsg.textContent && errorMsg.textContent.trim()) {
+                setTimeout(() => {
+                    showError(errorMsg.textContent);
+                }, 500);
+            }
+        });
+    </script>
+</body>
+</html>

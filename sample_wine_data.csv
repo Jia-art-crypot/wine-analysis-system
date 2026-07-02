@@ -1,0 +1,21 @@
+country,description,designation,points,rating,people,price
+US,"Rich dark fruit flavors with subtle oak undertones.",Reserve,96,4.8,1200,230.0
+Italy,"Beautiful Chianti with bright cherry notes and elegant tannins.",Riserva,92,4.6,850,85.0
+France,"Elegant Bordeaux blend with complex layers of blackcurrant and cedar.",Grand Cru,94,4.7,1100,450.0
+Spain,"Bold Rioja with intense dark berry flavors and vanilla oak notes.",Reserva,88,4.4,600,45.0
+US,"Fresh and vibrant Pinot Noir with red fruit character.",Estate,91,4.55,750,65.0
+Italy,"Crisp and refreshing Prosecco with delicate bubbles and citrus notes.",Brut,86,4.3,420,25.0
+France,"Sophisticated Champagne with fine mousse and brioche undertones.",Brut,95,4.75,950,180.0
+US,"Rich and buttery Chardonnay with tropical fruit and toasted oak.",Reserve,89,4.45,680,55.0
+Australia,"Full-bodied Shiraz with pepper and dark chocolate notes.",Premium,93,4.65,890,120.0
+Germany,"Off-dry Riesling with apricot and honey flavors.",Kabinett,87,4.35,550,35.0
+US,"Smooth Merlot with plum and black cherry flavors.",Estate,90,4.5,710,42.0
+Italy,"Complex Barolo with rose petal and tar notes.",Riserva,97,4.85,1350,320.0
+France,"Refreshing Sauvignon Blanc with grassy and citrus notes.",Pouilly-Fumé,85,4.25,380,28.0
+US,"Zinfandel with jammy blackberry and spice flavors.",Old Vine,88,4.4,520,38.0
+Argentina,"Malbec with dark fruit and violet aromas.",Reserva,92,4.6,780,68.0
+Chile,"Crisp Sauvignon Blanc with citrus and tropical fruit.",Reserve,84,4.2,350,22.0
+Portugal,"Rich Port wine with dark berry and chocolate notes.",Vintage,96,4.8,980,95.0
+Germany,"Dry Riesling with mineral and stone fruit notes.",Kabinett,88,4.4,580,32.0
+US,"Bold Cabernet with black cherry and spice.",Reserve,91,4.55,820,78.0
+Italy,"Elegant Amarone with dried fruit and spice notes.",Amarone,94,4.7,1050,145.0
