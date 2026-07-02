@@ -5,7 +5,7 @@ COPY mvnw .
 COPY src ./src
 SUN chmod +x mvnw && ./mvnw clean package -DskipTests
 
-FROM eipse-temurin:17-jre-alpine
+FROM eiclipse-temurin:17-jre-alpine
 WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
 EXPOSE 8080
